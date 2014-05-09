@@ -533,8 +533,9 @@ Sprite.prototype.updateCachedPenColor = function() {
 };
 
 Sprite.prototype.stamp = function(canvas, opacity) {
-    var drawWidth = this.textures[this.currentCostumeIndex].width * this.scale;
-    var drawHeight = this.textures[this.currentCostumeIndex].height * this.scale;
+    var resolution = this.costumes[this.currentCostumeIndex].bitmapResolution || 1;
+    var drawWidth = this.textures[this.currentCostumeIndex].width * this.scale / resolution;
+    var drawHeight = this.textures[this.currentCostumeIndex].height * this.scale / resolution;
     var drawX = this.scratchX + (480 / 2);
     var drawY = -this.scratchY + (360 / 2);
     canvas.globalAlpha = opacity / 100.0;
