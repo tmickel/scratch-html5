@@ -43,11 +43,11 @@ SensingPrims.prototype.primTouching = function(b) {
 
     var arg = interp.arg(b, 0);
     if (arg == '_edge_') {
-        return false; // TODO
+        return spriteEdgeHitTest(s);
     }
 
     if (arg == '_mouse_') {
-        return false; // TODO
+        return spriteMouseHitTest(s);
     }
 
     var s2 = runtime.spriteNamed(arg);
@@ -95,6 +95,47 @@ var spriteHitTest = function(a, b) {
     }
     return false;
 };
+
+var spriteEdgeHitTest = function(s) {
+    var hitCanvas = document.createElement('canvas');
+    hitCanvas.width = 480;
+    hitCanvas.height = 360;
+    var hitTester = hitCanvas.getContext('2d');
+    s.stamp(hitTester, 100);
+
+    var edgeData = [
+        hitTester.getImageData(0, 0, hitCanvas.width, 1).data, // top
+        hitTester.getImageData(0, hitCanvas.height - 1, hitCanvas.width, 1).data, // bottom
+        hitTester.getImageData(0, 0, 1, hitCanvas.height).data, // left
+        hitTester.getImageData(hitCanvas.width - 1, 0, 1, hitCanvas.width).data // right
+    ]
+
+    // Check all pixels on the edges of the hit canvas -
+    // if any are non-transparent, return true.
+    for (var i = 0; i < edgeData.length; i += 1) {
+        var pxCount = edgeData[i].length;
+        for (var p = 0; p < pxCount; p += 4) {
+            if (edgeData[i][p+3] > 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+var spriteMouseHitTest = function(s) {
+    var hitCanvas = document.createElement('canvas');
+    hitCanvas.width = 480;
+    hitCanvas.height = 360;
+    var hitTester = hitCanvas.getContext('2d');
+    s.stamp(hitTester, 100);
+
+    var mouseX = Math.round(runtime.mousePos[0] + 240);
+    var mouseY = Math.round(180 - runtime.mousePos[1]);
+    var aData = hitTester.getImageData(mouseX, mouseY, 1, 1).data;
+    // If the pixel where the mouse is has any opacity, return true
+    return aData[3] > 0;
+}
 
 var stageColorHitTest = function(target, color) {
     var r, g, b;
