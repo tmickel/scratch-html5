@@ -35,6 +35,7 @@ SensingPrims.prototype.addPrimsTo = function(primTable) {
 
     primTable['timeAndDate']  = function(b) { return runtime.getTimeString(interp.arg(b, 0)); };
     primTable['timestamp'] = this.primTimestamp;
+    primTable['soundLevel'] = function(b) { runtime.media.audioInitialize(); return runtime.micLoudness; }
 };
 
 SensingPrims.prototype.primTouching = function(b) {

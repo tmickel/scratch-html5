@@ -35,6 +35,8 @@ var Runtime = function() {
     this.audioPlaying = [];
     this.notesPlaying = [];
     this.projectLoaded = false;
+    this.micLoudness = -1;
+    this.media = null;
 };
 
 // Initializer for the drawing and audio contexts.
@@ -48,6 +50,7 @@ Runtime.prototype.init = function() {
         this.audioGain = this.audioContext.createGainNode();
     }
     this.audioGain.connect(runtime.audioContext.destination);
+    this.media = new Media(); // For microphone, video input
 };
 
 // Load start waits for the stage and the sprites to be loaded, without

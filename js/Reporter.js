@@ -38,6 +38,7 @@ var Reporter = function(data) {
 };
 
 Reporter.prototype.determineReporterLabel = function() {
+    if (this.target === "Stage" && this.cmd === "soundLevel") return "loudness";
     if (this.target === 'Stage' && this.cmd === "getVar:") return this.param;
     if (this.target === 'Stage' && this.param === null) return this.cmd;
     return this.target + ': ' + this.param;
@@ -111,6 +112,10 @@ Reporter.prototype.update = function() {
             break;
         case 'timer':
             newValue = '' + Math.round(interp.primitiveTable.timer() * 10) / 10;
+            break;
+        case 'soundLevel':
+            runtime.media.audioInitialize();
+            newValue = runtime.micLoudness;
             break;
     }
     if (typeof newValue === 'number' && Math.abs(newValue) > 0.001) {
